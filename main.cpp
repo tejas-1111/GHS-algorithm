@@ -22,12 +22,13 @@ Color 0A -> bg Black, fg Light green
 Coding stuff
 
 (INF, INF, INF) being returned as a result of init indicates that no outgoing edge is present
+(INF, 0, 0) being returned indicates waiting (to take care of false termination)
 While merging or absorbing, new fragment root will be the smaller of the two roots
 
 Tag:
-1 -> Init msg -> (root, level)
+1 -> Init msg -> (name, level)
 2 -> Passing results of probing -> (weight, n1, n2)
-3 -> Test msg -> (root, level)
+3 -> Test msg -> (name, level)
 4 -> Accept/Reject/Wait -> (0/1/2)
 
 */
@@ -95,8 +96,10 @@ int main(int argc, char **argv) {
                 if (edgetype[i] == 1) {
                     system("Color 01");
                     cout << rank << " sending initiate message to " << adjlist[i].second << endl;
-                    string msg = "Init";
-                    MPI_Send(&msg, msg.length(), MPI_CHAR, adjlist[i].second, 1, MPI_COMM_WORLD);
+                    int msg[2];
+                    msg[0] = name;
+                    msg[1] = level;
+                    MPI_Send(&msg, 2, MPI_INT, adjlist[i].second, 1, MPI_COMM_WORLD);
                 }
             }
 
@@ -104,16 +107,31 @@ int main(int argc, char **argv) {
             vector<pair<int, pair<int, int>>> results;
             for (auto i : sort_indexes(adjlist)) {
                 if (edgetype[i] == 0) {
-                    string msg = "Test";
+                    int msg[2];
+                    msg[0] = name;
+                    msg[1] = level;
                     MPI_Request request;
                     system("Color 02");
                     cout << rank << " sending test to " << adjlist[i].second << endl;
-                    MPI_Isend(&msg, msg.length(), MPI_CHAR, adjlist[i].second, 3, MPI_COMM_WORLD, &request);
+                    MPI_Isend(&msg, 2, MPI_INT, adjlist[i].second, 3, MPI_COMM_WORLD, &request);
                     MPI_Wait(&request, MPI_STATUS_IGNORE);
+                   
                     MPI_Status status;
-                    MPI_Recv(&msg, msg.length(), MPI_CHAR, MPI_ANY_SOURCE, 3, MPI_COMM_WORLD, &status);
-                    if ()
+                    MPI_Recv(&msg, 2, MPI_INT, adjlist[i].second, 3, MPI_COMM_WORLD, &status);
+                    system("Color 02");
+                    cout<< rank << " received test from "<<status.MPI_SOURCE<<endl;
+                    if (name == msg[0]) {
+                           // reject
+                    } else {
+                        if (msg[1] <= level) {
+                           // accept
+                        } else {
+                            // wait
+                        }
+                    }
+
                     MPI_Irecv(&msg, msg.length(), MPI_CHAR, adjlist[i].second, 4, MPI_COMM_WORLD, &request);
+                    // Wait basically means continue and wait for next iteration
                     MPI_Wait()
                 }
             }
@@ -125,23 +143,28 @@ int main(int argc, char **argv) {
         } else {
             // Not a root
             // Wait for initiate
-            string msg = "    ";
+            int msg[2];
             MPI_Status status;
-            MPI_Recv(&msg, msg.length(), MPI_CHAR, MPI_ANY_SOURCE, 1, MPI_COMM_WORLD, &status);
+            MPI_Recv(&msg, 2, MPI_INT, MPI_ANY_SOURCE, 1, MPI_COMM_WORLD, &status);
             system("Color 01");
             cout << rank << " received initiate message from " << status.MPI_SOURCE << endl;
+            name = msg[0];
+            level = msg[1];
 
             // Forward init along branch edges
             for (int i = 0; i < edgetype.size(); ++i) {
                 if (edgetype[i] == 1 && adjlist[i].second != status.MPI_SOURCE) {
                     system("Color 01");
                     cout << rank << " forwarding initiate message to " << adjlist[i].second << endl;
-                    string msg = "Init";
-                    MPI_Send(&msg, msg.length(), MPI_CHAR, adjlist[i].second, 1, MPI_COMM_WORLD);
+                    MPI_Send(&msg, 2, MPI_INT, adjlist[i].second, 1, MPI_COMM_WORLD);
                 }
             }
 
             // Probe along basic edges to determine minimum outgoing edge
+
+            // Fetch results from childeren
+
+            // Return results to parent
         }
     }
 
