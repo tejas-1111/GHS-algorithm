@@ -33,7 +33,17 @@ Tag:
 
 */
 
-// returns original indexes of elements in a sorted array
+int name;                        // name of fragment
+int level;                       // level of fragment
+int node;                        // Node = process rank
+int parent;                      // Node which sent initiate message
+int n;                           // Number of neighbors
+vector<pair<int, int>> adjlist;  // Stores (weight, neighbor)
+vector<int> edgetype;            // 0 -> basic edge, 1 -> Branch edge, -1 -> Reject edge
+
+/**
+ * @brief Returns original indexes of elements in an sorted array
+ */
 template <typename T>
 vector<size_t> sort_indexes(const vector<T> &v) {
     vector<size_t> idx(v.size());
@@ -43,27 +53,17 @@ vector<size_t> sort_indexes(const vector<T> &v) {
     return idx;
 }
 
-int main(int argc, char **argv) {
-    int rank, numprocs;
-    MPI_Init(&argc, &argv);                    // initiate MPI
-    MPI_Comm_size(MPI_COMM_WORLD, &numprocs);  // get size of the current communicator
-    MPI_Comm_rank(MPI_COMM_WORLD, &rank);      // get current process rank
-    MPI_Barrier(MPI_COMM_WORLD);               // synchronize all processes
-    double start_time = MPI_Wtime();
-
-    //_____________________________________________________________________________________________________________
-    // Input and basic constants
-    ifstream input(argv[1]);
+/**
+ * @brief Takes input, creates adjlist and sets basic variables up
+ *
+ * @param s -> Path for input
+ */
+void input(string s) {
+    ifstream input(s);
     int N;
     input >> N;
-
-    vector<pair<int, int>> adjlist;  // (weight, endpoint);
-    vector<int> edgetype;            // edgetype = 1 -> branch edge, 0 -> Basic edge, -1 -> Rejected edge
-    int level = 0;
-    int state = 0;  // 0 -> Sleep, 1 -> Find, 2 -> Found
-    int name = rank;
-
-    for (int i = 0; i < rank; ++i) {
+    vector<pair<int, int>> adjlist;
+    for (int i = 0; i < node; ++i) {
         for (int j = 0; j < N; ++j) {
             int temp;
             input >> temp;
@@ -75,98 +75,132 @@ int main(int argc, char **argv) {
         input >> temp;
         if (temp != INF) {
             adjlist.push_back({temp, i});
-            edgetype.push_back(0);
         }
     }
 
-    for (int i = rank + 1; i < N; ++i) {
+    for (int i = node + 1; i < N; ++i) {
         for (int j = 0; j < N; ++j) {
             int temp;
             input >> temp;
         }
     }
-    //_____________________________________________________________________________________________________________
-    while (true) {
-        // Initiate stage
-        if (rank == name) {
-            // Node is a root
 
-            // Send initiate along branch edges
-            for (int i = 0; i < edgetype.size(); ++i) {
-                if (edgetype[i] == 1) {
-                    system("Color 01");
-                    cout << rank << " sending initiate message to " << adjlist[i].second << endl;
-                    int msg[2];
-                    msg[0] = name;
-                    msg[1] = level;
-                    MPI_Send(&msg, 2, MPI_INT, adjlist[i].second, 1, MPI_COMM_WORLD);
-                }
+    edgetype.resize(adjlist.size(), 0);
+    name = node;
+    level = 0;
+    n = edgetype.size();
+}
+
+/**
+ * @brief Carries out Initiate stage
+ */
+void Initiate() {
+    // TODO change to MPI_Isend / MPI_Irecv
+    if (name == node) {
+        // Fragment root
+        parent = -1;
+
+        // Send out initiate message along branch edges
+        for (int i = 0; i < n; ++i) {
+            if (edgetype[i] == 1) {
+                int msg[2];
+                msg[0] = name;
+                msg[1] = level;
+                MPI_Send(&msg, 2, MPI_INT, adjlist[i].second, 1, MPI_COMM_WORLD);
             }
+        }
+    } else {
+        // Not a fragment root
 
-            // Probe along basic edges to find minimum outgoing edge
-            vector<pair<int, pair<int, int>>> results;
-            for (auto i : sort_indexes(adjlist)) {
-                if (edgetype[i] == 0) {
-                    int msg[2];
-                    msg[0] = name;
-                    msg[1] = level;
-                    MPI_Request request;
-                    system("Color 02");
-                    cout << rank << " sending test to " << adjlist[i].second << endl;
-                    MPI_Isend(&msg, 2, MPI_INT, adjlist[i].second, 3, MPI_COMM_WORLD, &request);
-                    MPI_Wait(&request, MPI_STATUS_IGNORE);
-                   
-                    MPI_Status status;
-                    MPI_Recv(&msg, 2, MPI_INT, adjlist[i].second, 3, MPI_COMM_WORLD, &status);
-                    system("Color 02");
-                    cout<< rank << " received test from "<<status.MPI_SOURCE<<endl;
-                    if (name == msg[0]) {
-                           // reject
-                    } else {
-                        if (msg[1] <= level) {
-                           // accept
-                        } else {
-                            // wait
-                        }
-                    }
+        // Receive initiate message and set name, level, parent
+        int msg[2];
+        MPI_Status status;
+        MPI_Recv(&msg, 2, MPI_INT, MPI_ANY_SOURCE, 1, MPI_COMM_WORLD, &status);
+        parent = status.MPI_SOURCE;
+        name = msg[0];
+        level = msg[1];
 
-                    MPI_Irecv(&msg, msg.length(), MPI_CHAR, adjlist[i].second, 4, MPI_COMM_WORLD, &request);
-                    // Wait basically means continue and wait for next iteration
-                    MPI_Wait()
-                }
+        // Forward initiate message along branch edges except to the parent
+        for (int i = 0; i < n; ++i) {
+            if (edgetype[i] == 1 && adjlist[i].second != parent) {
+                MPI_Send(&msg, 2, MPI_INT, adjlist[i].second, 1, MPI_COMM_WORLD);
             }
-
-            // Receive results
-
-            // Decide the minimum outgoing edge
-
-        } else {
-            // Not a root
-            // Wait for initiate
-            int msg[2];
-            MPI_Status status;
-            MPI_Recv(&msg, 2, MPI_INT, MPI_ANY_SOURCE, 1, MPI_COMM_WORLD, &status);
-            system("Color 01");
-            cout << rank << " received initiate message from " << status.MPI_SOURCE << endl;
-            name = msg[0];
-            level = msg[1];
-
-            // Forward init along branch edges
-            for (int i = 0; i < edgetype.size(); ++i) {
-                if (edgetype[i] == 1 && adjlist[i].second != status.MPI_SOURCE) {
-                    system("Color 01");
-                    cout << rank << " forwarding initiate message to " << adjlist[i].second << endl;
-                    MPI_Send(&msg, 2, MPI_INT, adjlist[i].second, 1, MPI_COMM_WORLD);
-                }
-            }
-
-            // Probe along basic edges to determine minimum outgoing edge
-
-            // Fetch results from childeren
-
-            // Return results to parent
         }
     }
+}
+
+/**
+ * @brief Carries out convergecast operation
+ *
+ */
+void ConvergeResults() {
+    if (name == node) {
+        // Fragment root
+
+        // Send test message along basic edges and reply to any test messages received
+        for (auto i : sort_indexes(adjlist)) {
+            if (edgetype[i] == 0) {
+                // Send test message
+                MPI_Request request;
+                int msg[2];
+                msg[0] = name;
+                msg[1] = level;
+                MPI_Isend(&msg, 2, MPI_INT, adjlist[i].second, 3, MPI_COMM_WORLD, &request);
+                MPI_Wait(&request, MPI_STATUS_IGNORE);
+
+                // TODO Make a function to answer any test probes received and keep on calling it (after sending join request and the other node not having the answer for its test probe)
+                // TODO Deadlock possible below, change it to use the new above function
+                // Reply to test messages until we receive test probe answer
+                int result;
+                MPI_Request reply;
+                MPI_Irecv(&result, 1, MPI_INT, adjlist[i].second, 4, MPI_COMM_WORLD, &reply);
+                int rep;  // Received reply yet? 1 if yes, 0 if no
+                int ans;  // Unanswered test probes?  1 if yes, 0 if no
+                MPI_Test(&reply, &rep, MPI_STATUS_IGNORE);
+                MPI_Iprobe(MPI_ANY_SOURCE, 3, MPI_COMM_WORLD, &ans, MPI_STATUS_IGNORE);
+                while (ans || !rep) {
+                    if (ans) {
+                        MPI_Status status;
+                        MPI_Recv(&msg, 2, MPI_INT, MPI_ANY_SOURCE, 3, MPI_COMM_WORLD, &status);
+                        int res = -1;
+                        if (name == msg[0]) {
+                            res = 1;
+                            for (int j = 0; j < n; ++j) {
+                                if (adjlist[j].second == status.MPI_SOURCE) {
+                                    edgetype[j] = -1;
+                                    break;
+                                }
+                            }
+                        } else {
+                            if (msg[1] <= level) {
+                                res = 0;
+                            } else {
+                                res = 2;
+                            }
+                        }
+                        MPI_Request sent;
+                        MPI_Isend(&res, 1, MPI_INT, status.MPI_SOURCE, 4, MPI_COMM_WORLD, &sent);
+                        MPI_Wait(&sent, MPI_STATUS_IGNORE);
+                    }
+                    if (!rep) {
+                        MPI_Test(&reply, &rep, MPI_STATUS_IGNORE);
+                    }
+                    MPI_Iprobe(MPI_ANY_SOURCE, 3, MPI_COMM_WORLD, &ans, MPI_STATUS_IGNORE);
+                }
+            }
+        }
+    }
+}
+
+int main(int argc, char **argv) {
+    int node, numprocs;
+    MPI_Init(&argc, &argv);                    // initiate MPI
+    MPI_Comm_size(MPI_COMM_WORLD, &numprocs);  // get size of the current communicator
+    MPI_Comm_rank(MPI_COMM_WORLD, &node);      // get current process node
+    MPI_Barrier(MPI_COMM_WORLD);               // synchronize all processes
+    double start_time = MPI_Wtime();
+
+    input(argv[1]);
 
     MPI_Barrier(MPI_COMM_WORLD);
     MPI_Finalize();
