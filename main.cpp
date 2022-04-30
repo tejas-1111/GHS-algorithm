@@ -7,6 +7,8 @@ using namespace std;
 
 double start_time;
 
+int wait = 0;
+
 #define CONNECT 1
 #define INITIATE 2
 #define TEST 3
@@ -26,7 +28,6 @@ int parent = 0;                         // node which sent  the initiate message
 int state = 0;                          // sleep = 0, find = 1, found = 2
 int node;                               // node id = process id
 int n;                                  // no of neighbours
-int c;                                  // no of children (nodes to whom we have sent initate message)
 int bestWt;                             // least weight outgoing edge found till now
 int bestNode;                           // child from which the edge was found
 int rec;                                // no of received reports
@@ -68,14 +69,18 @@ void Initialization() {
     level = 0;
     state = 2;
     rec = 0;
+    wait = 0;
 
     // send connect to min neighbour
-    int msg = 0;
-    MPI_Request sent;
-    printf("[%lf] %d(name=%d, level=%d) sending connect to %d with level=%d\n", MPI_Wtime() - start_time, node, name,
-           level, N(0), msg);
-    MPI_Isend(&msg, 1, MPI_INT, N(0), CONNECT, MPI_COMM_WORLD, &sent);
-    MPI_Wait(&sent, MPI_STATUS_IGNORE);
+    if (!wait) {
+        wait = 1;
+        int msg = 0;
+        MPI_Request sent;
+        printf("[%lf] %d(name=%d, level=%d) sending connect to %d with level=%d\n", MPI_Wtime() - start_time, node,
+               name, level, N(0), msg);
+        MPI_Isend(&msg, 1, MPI_INT, N(0), CONNECT, MPI_COMM_WORLD, &sent);
+        MPI_Wait(&sent, MPI_STATUS_IGNORE);
+    }
 }
 
 void connect(int q, int L) {
@@ -113,6 +118,12 @@ void connect(int q, int L) {
 }
 
 void report() {
+    int c = 0;
+    for (int i = 0; i < n; ++i) {
+        if (T(i) == 1 && N(i) != parent) {
+            ++c;
+        }
+    }
     if (rec == c && testNode == -1) {
         state = 2;
         MPI_Request sent;
@@ -127,7 +138,8 @@ void report() {
 void findMin() {
     int found = 0;
     for (int i = 0; i < n; ++i) {
-        if (T(i) == 0) {
+        if (T(i) == 0 && !wait) {
+            wait = 1;
             found = 1;
             testNode = N(i);
             MPI_Request sent;
@@ -156,7 +168,6 @@ void initiate(int q, int Level, int Name, int State) {
 
     for (int i = 0; i < n; ++i) {
         if (T(i) == 0 && N(i) != parent) {
-            ++c;
             MPI_Request sent;
             int send[3] = {level, name, state};
             printf("[%lf] %d(name=%d level=%d) sending init to %d with level=%d name=%d state=%d\n",
@@ -190,12 +201,15 @@ void changeRoot() {
         MPI_Wait(&sent, MPI_STATUS_IGNORE);
     } else {
         T(i) = 1;
-        int msg = level;
-        MPI_Request sent;
-        printf("[%lf] %d(name=%d level=%d) sending connect to %d with level=%d\n", MPI_Wtime() - start_time, node, name,
-               level, bestNode, msg);
-        MPI_Isend(&msg, 1, MPI_INT, bestNode, CONNECT, MPI_COMM_WORLD, &sent);
-        MPI_Wait(&sent, MPI_STATUS_IGNORE);
+        if (!wait) {
+            wait = 1;
+            int msg = level;
+            MPI_Request sent;
+            printf("[%lf] %d(name=%d level=%d) sending connect to %d with level=%d\n", MPI_Wtime() - start_time, node,
+                   name, level, bestNode, msg);
+            MPI_Isend(&msg, 1, MPI_INT, bestNode, CONNECT, MPI_COMM_WORLD, &sent);
+            MPI_Wait(&sent, MPI_STATUS_IGNORE);
+        }
     }
 }
 
@@ -343,6 +357,7 @@ int main(int argc, char **argv) {
                        MPI_Wtime() - start_time, node, name, level, q, Level, Name);
                 test(q, Level, Name);
             } else if (msg_info.MPI_TAG == ACCREJ) {
+                wait = 0;
                 int msg;
                 MPI_Status msg_info;
                 MPI_Recv(&msg, 1, MPI_INT, MPI_ANY_SOURCE, ACCREJ, MPI_COMM_WORLD, &msg_info);
@@ -399,7 +414,8 @@ int main(int argc, char **argv) {
                 reportRecv(element.second[0], element.second[1]);
             } else if (element.first == TEST) {
                 printf("[%lf] %d(name=%d level=%d) resolving waiting test with q=%d level=%d name=%d\n",
-                       MPI_Wtime() - start_time, node, name, level, element.second[0], element.second[1], element.second[2]);
+                       MPI_Wtime() - start_time, node, name, level, element.second[0], element.second[1],
+                       element.second[2]);
                 test(element.second[0], element.second[1], element.second[2]);
             }
         }

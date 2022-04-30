@@ -1,62 +1,98 @@
-[0.000001] 3(name=0, level=0) initalization
-[0.000021] 3(name=0, level=0) sending connect to 0 with level=0
-[0.000001] 0(name=0, level=0) initalization
-[0.000022] 0(name=0, level=0) sending connect to 1 with level=0
-[0.000034] 0(name=0 level=0) waiting connect q=2 L=0
-[0.000039] 0(name=0 level=0) waiting connect q=2 L=0
-[0.000042] 0(name=0 level=0) waiting connect q=2 L=0
-[0.000045] 0(name=0 level=0) sending initiate to 1 with level=1, name=1, state=1
-[0.000051] 0(name=0 level=0) waiting connect q=2 L=0
-[0.000054] 0(name=0 level=0) waiting connect q=2 L=0
-[0.000057] 0(name=0 level=0) waiting connect q=3 L=0
-[0.000060] 0(name=0 level=0) waiting connect q=2 L=0
-[0.000063] 0(name=0 level=0) waiting connect q=3 L=0
-[0.000066] 0(name=1 level=1) sending init to 2 with level=1 name=1 state=1
-[0.000069] 0(name=1 level=1) sending init to 3 with level=1 name=1 state=1
-[0.000071] 0(name=1 level=1) sending test to 2 with level=1 name=1
-[0.000074] 0(name=1 level=1) sending initiate to 2 with level=1, name=1, state=1
-[0.000077] 0(name=1 level=1) sending initiate to 3 with level=1, name=1, state=1
-[0.000002] 1(name=0, level=0) initalization
-[0.000018] 1(name=0, level=0) sending connect to 0 with level=0
-[0.000029] 1(name=0 level=0) sending initiate to 0 with level=1, name=1, state=1
-[0.000047] 1(name=1 level=1) sending init to 2 with level=1 name=1 state=1
-[0.000057] 1(name=1 level=1) sending init to 3 with level=1 name=1 state=1
-[0.000063] 1(name=1 level=1) sending test to 2 with level=1 name=1
-[0.000076] 1(name=1 level=1) sending test to 3 with level=1 name=1
-[0.000084] 1(name=1 level=1) sending reject to q=2 with ds=-1
-[0.000091] 1(name=1 level=1) sending reject to q=3 with ds=-1
 [0.000001] 2(name=0, level=0) initalization
-[0.000021] 2(name=0, level=0) sending connect to 0 with level=0
-[0.000066] 2(name=1 level=1) sending init to 3 with level=1 name=1 state=1
-[0.000072] 2(name=1 level=1) sending test to 1 with level=1 name=1
+[0.000014] 2(name=0, level=0) sending connect to 0 with level=0
+[0.000001] 3(name=0, level=0) initalization
+[0.000012] 3(name=0, level=0) sending connect to 0 with level=0
+[0.000057] 3(name=0 level=0) received initate from 1 with level=1 name=1 state=1
+[0.000061] 3(name=1 level=1) sending init to 2 with level=1 name=1 state=1
+[0.000001] 0(name=0, level=0) initalization
+[0.000015] 0(name=0, level=0) sending connect to 1 with level=0
+[0.000024] 0(name=0 level=0) received connect from 2 with level=0
+[0.000027] 0(name=0 level=0) waiting connect q=2 L=0
+[0.000031] 0(name=0 level=0) resolving waiting connect with q=2 level=0
+[0.000034] 0(name=0 level=0) waiting connect q=2 L=0
+[0.000038] 0(name=0 level=0) resolving waiting connect with q=2 level=0
+[0.000039] 0(name=0 level=0) waiting connect q=2 L=0
+[0.000041] 0(name=0 level=0) received connect from 1 with level=0
+[0.000043] 0(name=0 level=0) sending initiate to 1 with level=1, name=1, state=1
+[0.000045] 0(name=0 level=0) resolving waiting connect with q=2 level=0
+[0.000048] 0(name=0 level=0) waiting connect q=2 L=0
+[0.000050] 0(name=0 level=0) resolving waiting connect with q=2 level=0
+[0.000052] 0(name=0 level=0) waiting connect q=2 L=0
+[0.000055] 0(name=0 level=0) received connect from 3 with level=0
+[0.000057] 0(name=0 level=0) waiting connect q=3 L=0
+[0.000059] 0(name=0 level=0) resolving waiting connect with q=2 level=0
+[0.000061] 0(name=0 level=0) waiting connect q=2 L=0
+[0.000063] 0(name=0 level=0) resolving waiting connect with q=3 level=0
+[0.000066] 0(name=0 level=0) waiting connect q=3 L=0
+[0.000001] 1(name=0, level=0) initalization
+[0.000014] 1(name=0, level=0) sending connect to 0 with level=0
+[0.000023] 1(name=0 level=0) received connect from 0 with level=0
+[0.000025] 1(name=0 level=0) sending initiate to 0 with level=1, name=1, state=1
+[0.000044] 1(name=0 level=0) received initate from 0 with level=1 name=1 state=1
+[0.000047] 1(name=1 level=1) sending init to 2 with level=1 name=1 state=1
+[0.000051] 1(name=1 level=1) sending init to 3 with level=1 name=1 state=1
+[0.000054] 1(name=1 level=1) sending report to 0 with bestWt=100000
+[0.000058] 2(name=0 level=0) received initate from 1 with level=1 name=1 state=1
+[0.000063] 2(name=1 level=1) sending init to 3 with level=1 name=1 state=1
+[0.000070] 2(name=1 level=1) received initate from 3 with level=1 name=1 state=1
+[0.000072] 2(name=1 level=1) sending init to 1 with level=1 name=1 state=1
+[0.000075] 2(name=1 level=1) received initate from 0 with level=1 name=1 state=1
 [0.000076] 2(name=1 level=1) sending init to 1 with level=1 name=1 state=1
-[0.000081] 2(name=1 level=1) sending init to 3 with level=1 name=1 state=1
-[0.000082] 2(name=1 level=1) sending test to 1 with level=1 name=1
-[0.000085] 2(name=1 level=1) sending test to 3 with level=1 name=1
-[0.000090] 2(name=1 level=1) sending reject to q=0 with ds=-1
-[0.000093] 2(name=1 level=1) sending init to 3 with level=1 name=1 state=1
-[0.000095] 2(name=1 level=1) sending test to 3 with level=1 name=1
-[0.000100] 2(name=1 level=1) sending test to 3 with level=1 name=1
-[0.000072] 3(name=1 level=1) sending init to 2 with level=1 name=1 state=1
-[0.000076] 3(name=1 level=1) sending test to 1 with level=1 name=1
-[0.000082] 3(name=1 level=1) sending init to 1 with level=1 name=1 state=1
-[0.000084] 3(name=1 level=1) sending init to 2 with level=1 name=1 state=1
-[0.000087] 3(name=1 level=1) sending test to 1 with level=1 name=1
-[0.000092] 3(name=1 level=1) sending init to 1 with level=1 name=1 state=1
-[0.000094] 3(name=1 level=1) sending test to 1 with level=1 name=1
-[0.000098] 3(name=1 level=1) sending init to 1 with level=1 name=1 state=1
-[0.000101] 3(name=1 level=1) sending init to 2 with level=1 name=1 state=1
-[0.000104] 3(name=1 level=1) sending test to 1 with level=1 name=1
-[0.000107] 3(name=1 level=1) sending test to 2 with level=1 name=1
-[0.000109] 3(name=1 level=1) sending test to 2 with level=1 name=1
-[0.000097] 1(name=1 level=1) sending reject to q=3 with ds=-1
-[0.000104] 1(name=1 level=1) sending reject to q=3 with ds=-1
-[0.000104] 2(name=1 level=1) sending test to 3 with level=1 name=1
-[0.000107] 2(name=1 level=1) sending test to 3 with level=1 name=1
-[0.000109] 2(name=1 level=1) sending test to 3 with level=1 name=1
-[0.000113] 2(name=1 level=1) sending reject to q=3 with ds=-1
-[0.000114] 3(name=1 level=1) sending reject to q=2 with ds=-1
-[0.000118] 3(name=1 level=1) sending reject to q=2 with ds=-1
-[0.000121] 3(name=1 level=1) sending reject to q=2 with ds=-1
-[0.000124] 3(name=1 level=1) sending reject to q=2 with ds=-1
-[0.000127] 3(name=1 level=1) sending reject to q=2 with ds=-1
+[0.000080] 2(name=1 level=1) sending init to 3 with level=1 name=1 state=1
+[0.000082] 2(name=1 level=1) sending report to 0 with bestWt=100000
+[0.000087] 2(name=1 level=1) received initate from 0 with level=1 name=1 state=2
+[0.000090] 2(name=1 level=1) sending init to 1 with level=1 name=1 state=2
+[0.000093] 2(name=1 level=1) sending init to 3 with level=1 name=1 state=2
+[0.000096] 2(name=1 level=1) received initate from 1 with level=1 name=1 state=1
+[0.000098] 2(name=1 level=1) sending init to 3 with level=1 name=1 state=1
+[0.000076] 1(name=1 level=1) received initate from 3 with level=1 name=1 state=1
+[0.000079] 1(name=1 level=1) sending init to 2 with level=1 name=1 state=1
+[0.000082] 1(name=1 level=1) received initate from 2 with level=1 name=1 state=1
+[0.000087] 1(name=1 level=1) sending init to 3 with level=1 name=1 state=1
+[0.000090] 1(name=1 level=1) received report from 0 with weight=100000
+[0.000093] 1(name=1 level=1) sending report to 2 with bestWt=100000
+[0.000097] 1(name=1 level=1) received initate from 2 with level=1 name=1 state=1
+[0.000099] 1(name=1 level=1) sending init to 3 with level=1 name=1 state=1
+[0.000104] 1(name=1 level=1) received initate from 3 with level=1 name=1 state=1
+[0.000068] 3(name=1 level=1) received initate from 2 with level=1 name=1 state=1
+[0.000070] 3(name=1 level=1) sending init to 1 with level=1 name=1 state=1
+[0.000073] 3(name=1 level=1) received initate from 0 with level=1 name=1 state=1
+[0.000075] 3(name=1 level=1) sending init to 1 with level=1 name=1 state=1
+[0.000078] 3(name=1 level=1) sending init to 2 with level=1 name=1 state=1
+[0.000081] 3(name=1 level=1) sending report to 0 with bestWt=100000
+[0.000085] 3(name=1 level=1) received initate from 2 with level=1 name=1 state=1
+[0.000089] 3(name=1 level=1) sending init to 1 with level=1 name=1 state=1
+[0.000091] 3(name=1 level=1) received initate from 0 with level=1 name=1 state=2
+[0.000094] 3(name=1 level=1) sending init to 1 with level=1 name=1 state=2
+[0.000097] 3(name=1 level=1) sending init to 2 with level=1 name=1 state=2
+[0.000101] 3(name=1 level=1) received initate from 1 with level=1 name=1 state=1
+[0.000105] 3(name=1 level=1) sending init to 2 with level=1 name=1 state=1
+[0.000069] 0(name=0 level=0) received initate from 1 with level=1 name=1 state=1
+[0.000070] 0(name=1 level=1) sending init to 2 with level=1 name=1 state=1
+[0.000073] 0(name=1 level=1) sending init to 3 with level=1 name=1 state=1
+[0.000075] 0(name=1 level=1) sending report to 1 with bestWt=100000
+[0.000077] 0(name=1 level=1) resolving waiting connect with q=2 level=0
+[0.000079] 0(name=1 level=1) sending initiate to 2 with level=1, name=1, state=2
+[0.000082] 0(name=1 level=1) resolving waiting connect with q=3 level=0
+[0.000088] 0(name=1 level=1) sending initiate to 3 with level=1, name=1, state=2
+[0.000091] 0(name=1 level=1) received report from 1 with weight=100000
+[0.000093] 0(name=1 level=1) sending terminate to q=1
+[0.000097] 0(name=1 level=1) sending terminate to q=2
+[0.000099] 0(name=1 level=1) sending terminate to q=3
+0 1 1
+0 2 2
+0 3 3
+[0.000106] 1(name=1 level=1) sending init to 2 with level=1 name=1 state=1
+[0.000109] 1(name=1 level=1) received initate from 3 with level=1 name=1 state=1
+[0.000112] 1(name=1 level=1) sending init to 2 with level=1 name=1 state=1
+[0.000118] 1(name=1 level=1) received initate from 2 with level=1 name=1 state=2
+[0.000120] 1(name=1 level=1) sending init to 3 with level=1 name=1 state=2
+[0.000125] 1(name=1 level=1) received terminate from 0
+[0.000108] 3(name=1 level=1) received initate from 2 with level=1 name=1 state=2
+[0.000111] 3(name=1 level=1) sending init to 1 with level=1 name=1 state=2
+[0.000116] 3(name=1 level=1) received terminate from 0
+[0.000102] 2(name=1 level=1) received initate from 3 with level=1 name=1 state=1
+[0.000105] 2(name=1 level=1) sending init to 1 with level=1 name=1 state=1
+[0.000110] 2(name=1 level=1) received report from 1 with weight=100000
+[0.000114] 2(name=1 level=1) sending report to 3 with bestWt=100000
+[0.000121] 2(name=1 level=1) received terminate from 0

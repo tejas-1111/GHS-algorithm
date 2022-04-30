@@ -1,4 +1,4 @@
-file1 = open('sample_output.txt', 'r')
+file1 = open('output.txt', 'r')
 Lines = file1.readlines()
 
 count = 0
@@ -20,7 +20,6 @@ for line in lst:
     cnt += 1
 
 lst2.sort(key=lambda y: y[1])
-print(lst2)
 
 file1 = open("new_output.txt", "w")
 for tup in lst2:
