@@ -7,7 +7,8 @@ using namespace std;
 
 double start_time;
 
-int wait = 0;
+int testwait = 0;
+int connectwait = 0;
 
 #define CONNECT 1
 #define INITIATE 2
@@ -69,11 +70,11 @@ void Initialization() {
     level = 0;
     state = 2;
     rec = 0;
-    wait = 0;
+    connectwait = 0;
 
     // send connect to min neighbour
-    if (!wait) {
-        wait = 1;
+    if (!connectwait) {
+        connectwait = 1;
         int msg = 0;
         MPI_Request sent;
         printf("[%lf] %d(name=%d, level=%d) sending connect to %d with level=%d\n", MPI_Wtime() - start_time, node,
@@ -94,6 +95,7 @@ void connect(int q, int L) {
 
     if (L < level) {
         T(i) = 1;
+        printf("[9.999999] BRANCH EDGE: %d %d\n", min(node, N(i)), max(node, N(i)));
         MPI_Request sent;
         int send[3] = {level, name, state};
         printf("[%lf] %d(name=%d level=%d) sending initiate to %d with level=%d, name=%d, state=%d\n",
@@ -138,8 +140,8 @@ void report() {
 void findMin() {
     int found = 0;
     for (int i = 0; i < n; ++i) {
-        if (T(i) == 0 && !wait) {
-            wait = 1;
+        if (T(i) == 0 && !testwait) {
+            testwait = 1;
             found = 1;
             testNode = N(i);
             MPI_Request sent;
@@ -201,8 +203,9 @@ void changeRoot() {
         MPI_Wait(&sent, MPI_STATUS_IGNORE);
     } else {
         T(i) = 1;
-        if (!wait) {
-            wait = 1;
+        printf("[9.999999] BRANCH EDGE: %d %d\n", min(node, N(i)), max(node, N(i)));
+        if (!connectwait) {
+            connectwait = 1;
             int msg = level;
             MPI_Request sent;
             printf("[%lf] %d(name=%d level=%d) sending connect to %d with level=%d\n", MPI_Wtime() - start_time, node,
@@ -357,7 +360,7 @@ int main(int argc, char **argv) {
                        MPI_Wtime() - start_time, node, name, level, q, Level, Name);
                 test(q, Level, Name);
             } else if (msg_info.MPI_TAG == ACCREJ) {
-                wait = 0;
+                testwait = 0;
                 int msg;
                 MPI_Status msg_info;
                 MPI_Recv(&msg, 1, MPI_INT, MPI_ANY_SOURCE, ACCREJ, MPI_COMM_WORLD, &msg_info);
@@ -378,7 +381,7 @@ int main(int argc, char **argv) {
             } else if (msg_info.MPI_TAG == CHANGEROOT) {
                 int msg;
                 MPI_Status msg_info;
-                MPI_Recv(&msg, 1, MPI_INT, MPI_ANY_SOURCE, REPORT, MPI_COMM_WORLD, &msg_info);
+                MPI_Recv(&msg, 1, MPI_INT, MPI_ANY_SOURCE, CHANGEROOT, MPI_COMM_WORLD, &msg_info);
                 printf("[%lf] %d(name=%d level=%d) received changeroot from %d\n", MPI_Wtime() - start_time, node, name,
                        level, msg_info.MPI_SOURCE);
                 changeRoot();
@@ -424,8 +427,8 @@ int main(int argc, char **argv) {
         }
     }
     for (int i = 0; i < n; ++i) {
-        if (T(i) == 1 && N(i) > node) {
-            cout << node << " " << N(i) << " " << W(i) << endl;
+        if (T(i) == 1) {
+            cout << min(N(i), node) << " " << max(N(i), node) << " " << W(i) << endl;
         }
     }
 
