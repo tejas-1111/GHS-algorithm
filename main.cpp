@@ -171,8 +171,11 @@ void initiate(int q, int Level, int Name, int State) {
     bestWt = INF;
     testNode = -1;
 
+    connectwait = 0;
+    reportwait = 0;
+
     for (int i = 0; i < n; ++i) {
-        if (T(i) == 0 && N(i) != parent) {
+        if (T(i) == 1 && N(i) != parent) {
             MPI_Request sent;
             int send[3] = {level, name, state};
             printf("[%lf] %d(name=%d level=%d) sending init to %d with level=%d name=%d state=%d\n",
@@ -304,7 +307,7 @@ void accrej(int q, int ds) {
     }
     if (ds == -1) {
         if (T(i) == 0) {
-            T(i) == -1;
+            T(i) = -1;
         }
         findMin();
     } else {
@@ -430,8 +433,8 @@ int main(int argc, char **argv) {
         }
     }
     for (int i = 0; i < n; ++i) {
-        if (T(i) == 1) {
-            cout << min(N(i), node) << " " << max(N(i), node) << " " << W(i) << endl;
+        if (T(i) == 1 && N(i) > node) {
+            cout <<"MST: "<< node << " " << N(i) << " " << W(i) << endl;
         }
     }
 
