@@ -1,0 +1,33 @@
+[0.025577] 1(name=0, level=0) initalization
+[0.025597] 1(name=0, level=0) sending connect to 0 with level=0
+[0.025610] 1(name=0 level=0) sending initiate to 0 with level=1, name=1, state=1
+[0.025621] 1(name=1 level=1) sending init to 2 with level=1 name=1 state=1
+[0.025625] 1(name=1 level=1) sending test to 2 with level=1 name=1
+[0.025639] 1(name=1 level=1) sending report to 0 with bestWt=100000
+[0.025082] 2(name=0, level=0) initalization
+[0.025102] 2(name=0, level=0) sending connect to 0 with level=0
+[0.025137] 2(name=1 level=1) sending test to 1 with level=1 name=1
+[0.025141] 2(name=1 level=1) sending report to 1 with bestWt=100000
+[0.025144] 2(name=1 level=1) sending report to 0 with bestWt=100000
+[0.025147] 2(name=1 level=1) sending accrej to q=0 with ds=-1
+[0.025150] 2(name=1 level=1) sending report to 0 with bestWt=100000
+[0.025577] 0(name=0, level=0) initalization
+[0.025597] 0(name=0, level=0) sending connect to 1 with level=0
+[0.025610] 0(name=0 level=0) waiting connect q=2 L=0
+[0.025613] 0(name=0 level=0) waiting connect q=2 L=0
+[0.025616] 0(name=0 level=0) waiting connect q=2 L=0
+[0.025618] 0(name=0 level=0) sending initiate to 1 with level=1, name=1, state=1
+[0.025621] 0(name=0 level=0) waiting connect q=2 L=0
+[0.025624] 0(name=0 level=0) waiting connect q=2 L=0
+[0.025627] 0(name=1 level=1) sending init to 2 with level=1 name=1 state=1
+[0.025630] 0(name=1 level=1) sending test to 2 with level=1 name=1
+[0.025632] 0(name=1 level=1) sending initiate to 2 with level=1, name=1, state=1
+[0.025642] 0(name=1 level=1) waiting with q=1 w=100000
+[0.025645] 0(name=1 level=1) waiting with q=1 w=100000
+[0.025649] 0(name=1 level=1) waiting with q=1 w=100000
+[0.025652] 0(name=1 level=1) sending report to 1 with bestWt=100000
+[0.025655] 0(name=1 level=1) sending terminate to q=1
+[0.025657] 0(name=1 level=1) sending terminate to q=2
+[0.025655] 1(name=1 level=1) sending terminate to q=0
+0 1 1
+0 2 10

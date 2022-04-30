@@ -1,6 +1,14 @@
 {
     "files.associations": {
         "string_view": "cpp",
-        "regex": "cpp"
+        "regex": "cpp",
+        "barrier": "cpp",
+        "*.tcc": "cpp",
+        "random": "cpp",
+        "numeric": "cpp",
+        "ratio": "cpp",
+        "array": "cpp",
+        "type_traits": "cpp",
+        "utility": "cpp"
     }
 }
