@@ -9,6 +9,7 @@ double start_time;
 
 int testwait = 0;
 int connectwait = 0;
+int reportwait = 0;
 
 #define CONNECT 1
 #define INITIATE 2
@@ -71,6 +72,7 @@ void Initialization() {
     state = 2;
     rec = 0;
     connectwait = 0;
+    reportwait = 0;
 
     // send connect to min neighbour
     if (!connectwait) {
@@ -126,7 +128,8 @@ void report() {
             ++c;
         }
     }
-    if (rec == c && testNode == -1) {
+    if (rec == c && testNode == -1 && !reportwait) {
+        reportwait = 1;
         state = 2;
         MPI_Request sent;
         int send = bestWt;
