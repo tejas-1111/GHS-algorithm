@@ -2,7 +2,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int par[30], sz[30];
+int par[100], sz[100];
 
 int find_parent(int u)
 {
@@ -29,7 +29,7 @@ int merge_set(int u, int v)
 
 int main()
 {
-    int n, arr[30][30];
+    int n, arr[100][100];
     vector<pair<int, pair<int, int>>> edges;
     vector<pair<int, pair<int, int>>> selected_edges;
     cin >> n;

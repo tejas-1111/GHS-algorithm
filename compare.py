@@ -26,7 +26,7 @@ sorted_orig = [(y, x) for y, x in sorted(zip(orig_weight, orig_node))]
 print("----------------- Values from GHS ---------------")
 for val in sorted_ghs:
     print(f"{val[1][0]} {val[1][1]} {val[0]}")
-print("-----------------      True       ---------------")
+print("----------------- Values from Kruskal ---------------")
 for val in sorted_orig:
     print(f"{val[1][0]} {val[1][1]} {val[0]}")
 print("-------------------------------------------------")

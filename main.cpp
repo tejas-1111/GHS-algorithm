@@ -434,7 +434,7 @@ int main(int argc, char **argv) {
     }
     for (int i = 0; i < n; ++i) {
         if (T(i) == 1 && N(i) > node) {
-            cout <<"MST: "<< node << " " << N(i) << " " << W(i) << endl;
+            printf("MST: %d %d %d\n", node, N(i), W(i));
         }
     }
 

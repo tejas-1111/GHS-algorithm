@@ -2,7 +2,7 @@
 #include <bits/stdc++.h>
 #include <time.h>
 using namespace std;
-int par[30], sz[30];
+int par[100], sz[100];
 
 int find_parent(int u)
 {
@@ -32,7 +32,7 @@ int main()
     int n;
     cin >> n;
     int prev_val = 1, cnt = 0;
-    int values_picked[5000] = {0};
+    int values_picked[9000] = {0};
     vector<pair<int, pair<int, int>>> edges;
     for (int i = 0; i < n; i++)
     {
@@ -76,7 +76,8 @@ int main()
             {
                 if (rand() % 2 == 0)
                 {
-                    for (int k = 5; k < 3000; k++)
+                    int jumpTemp = 1 + rand() % 4;
+                    for (int k = 5; k < 9000; k += jumpTemp)
                     {
                         if (values_picked[k] == 0)
                         {
